@@ -15,7 +15,7 @@ const MapsScreen = props => {
 MapsScreen.navigationOptions = navData => {
   return {
     headerTitle: 'Filter Meals',
-    headerLeft: (
+    headerLeft: () =>
       <Ionicons
       style={{ paddingLeft: 10 }}
       onPress={() => navData.navigation.openDrawer()} 
@@ -23,7 +23,7 @@ MapsScreen.navigationOptions = navData => {
       size={20} 
       color={Colors.primaryColor}
       />
-    ),
+    ,
     headerTitleStyle: {
       fontFamily: 'pacifico',
       fontSize: 23

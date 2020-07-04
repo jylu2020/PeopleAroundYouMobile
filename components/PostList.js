@@ -24,6 +24,8 @@ const PostList = props => {
   return (
     <View style={styles.list}>
       <FlatList
+        onRefresh={props.onRefresh}
+        refreshing={props.refreshing}
         data={props.listData}
         keyExtractor={(item, index) => item.id}
         renderItem={renderPostItem}

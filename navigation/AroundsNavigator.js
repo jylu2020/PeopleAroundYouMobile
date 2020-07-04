@@ -1,11 +1,14 @@
 import React from 'react';
-import { Platform } from 'react-native';
-import { createAppContainer } from 'react-navigation';
+import { Platform, SafeAreaView, Button, View } from 'react-native';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
-import { createDrawerNavigator } from 'react-navigation-drawer'; 
+import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer'; 
+
+import { useDispatch } from 'react-redux';
+import * as authActions from '../store/actions/auth';
 
 import PostsScreen from '../screens/PostsScreen';
 import PostDetailScreen from '../screens/PostDetailScreen';
@@ -13,6 +16,7 @@ import FacesScreen from '../screens/FacesScreen';
 import FoodsScreen from '../screens/FoodsScreen';
 import ExerciseScreen from '../screens/ExerciseScreen';
 import MapsScreen from '../screens/MapsScreen';
+import AuthScreen from '../screens/AuthScreen';
 import Colors from '../constants/Colors';
 
 const defaultStackNavOptions = {
@@ -174,15 +178,15 @@ const PostsStackNavigator = createStackNavigator(
   {
     defaultNavigationOptions: ({ navigation }) => {
       return {
-        headerLeft: (
-          <Ionicons
+        headerLeft: () =>
+        <Ionicons
           style={{ paddingLeft: 10 }}
           onPress={() => navigation.openDrawer()} 
           name="ios-menu" 
           size={20} 
           color={Colors.primaryColor}
-          />
-        ),
+        />
+        ,
         headerStyle: {
           backgroundColor: Platform.OS === 'android' ? Colors.primaryColor : ''
         },
@@ -200,7 +204,7 @@ const PostsStackNavigator = createStackNavigator(
   }
 );
 
-const MainNavigator = createDrawerNavigator(
+const HomeNavigator = createDrawerNavigator(
   {
     Posts: {
       screen: PostsStackNavigator
@@ -213,8 +217,40 @@ const MainNavigator = createDrawerNavigator(
       labelStyle: {
         fontFamily: 'raleway-bold'
       }
+    },
+    contentComponent: props => {
+      const dispatch = useDispatch();
+      return (
+        <View style={{ flex: 1, paddingTop: 20 }}>
+          <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+            <DrawerItems {...props} />
+            <Button
+              title="Logout"
+              color={Colors.primary}
+              onPress={() => {
+                dispatch(authActions.logout());
+                props.navigation.navigate('Auth');
+              }}
+            />
+          </SafeAreaView>
+        </View>
+      );
     }
   }
 );
+
+const AuthNavigator = createStackNavigator(
+  {
+    Auth: AuthScreen
+  },
+  {
+    defaultNavigationOptions: defaultStackNavOptions
+  }
+);
+
+const MainNavigator = createSwitchNavigator({
+  Auth: AuthNavigator,
+  Home: HomeNavigator
+});
 
 export default createAppContainer(MainNavigator);

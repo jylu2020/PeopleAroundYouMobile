@@ -3,10 +3,22 @@ import { Text, View } from 'react-native';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 import { enableScreens } from 'react-native-screens';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import ReduxThunk from 'redux-thunk';
 
+import authReducer from './store/reducers/auth';
+import postReducer from './store/reducers/posts';
 import AroundsNavigator from './navigation/AroundsNavigator';
 
 enableScreens();
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+  posts: postReducer
+});
+
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -32,6 +44,8 @@ export default function App() {
   }
 
   return (
-    <AroundsNavigator />
+    <Provider store={store}>
+      <AroundsNavigator />
+    </Provider>
   );
 }

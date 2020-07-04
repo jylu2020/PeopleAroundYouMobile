@@ -1,19 +1,18 @@
 import React from 'react';
 import {
   ScrollView,
-  View,
   Image,
   Text,
-  Button,
   StyleSheet
 } from 'react-native';
+import { useSelector } from 'react-redux';
 
-import { POSTS } from '../data/dummy-posts';
 
 const PostDetailScreen = props => {
+  const posts = useSelector(state => state.posts.availablePosts);
   const postId = props.navigation.getParam('postId');
 
-  const selectedPost = POSTS.find(post => post.id === postId);
+  const selectedPost = posts.find(post => post.id === postId);
 
   return (
     <ScrollView>
