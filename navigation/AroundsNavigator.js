@@ -17,6 +17,7 @@ import FoodsScreen from '../screens/FoodsScreen';
 import ExerciseScreen from '../screens/ExerciseScreen';
 import MapsScreen from '../screens/MapsScreen';
 import AuthScreen from '../screens/AuthScreen';
+import NewPostScreen from '../screens/NewPostScreen';
 import Colors from '../constants/Colors';
 
 const defaultStackNavOptions = {
@@ -208,6 +209,12 @@ const HomeNavigator = createDrawerNavigator(
   {
     Posts: {
       screen: PostsStackNavigator
+    },
+    NewPosts: {
+      screen: NewPostScreen,
+      navigationOptions: {
+        drawerLabel: 'Add New Post'
+      }
     },
     Maps: MapsNavigator
   },

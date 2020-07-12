@@ -6,8 +6,10 @@ import {
   ActivityIndicator,
   StyleSheet
 } from 'react-native';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useSelector, useDispatch } from 'react-redux';
 import * as postsActions from '../store/actions/posts';
+import HeaderButton from '../components/HeaderButton';
 import PostList from '../components/PostList';
 import Colors from '../constants/Colors';
 
@@ -85,7 +87,18 @@ const PostsScreen = props => {
 };
 
 PostsScreen.navigationOptions = {
-  headerTitle: 'All Posts'
+  headerTitle: 'All Posts',
+  headerRight: (
+    <HeaderButtons HeaderButtonComponent={HeaderButton}>
+      <Item
+        title="New Post"
+        iconName={Platform.OS === 'android' ? 'md-add' : 'ios-add'}
+        onPress={() => {
+          navData.navigation.navigate('newPost');
+        }}
+      />
+    </HeaderButtons>
+  )
 };
 
 const styles = StyleSheet.create({

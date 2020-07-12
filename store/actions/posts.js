@@ -5,6 +5,7 @@ export const GET_ALL_POSTS = 'GET_ALL_POSTS';
 export const GET_FACE_POSTS = 'GET_FACE_POSTS';
 export const GET_FOOD_POSTS = 'GET_FOOD_POSTS';
 export const GET_EXERCISE_POSTS = 'GET_EXERCISE_POSTS';
+export const CREATE_POST = 'CREATE_POST';
 
 export const fetchAllPosts = () => {
     return async (dispatch, getState) => {
@@ -33,7 +34,9 @@ export const fetchAllPosts = () => {
                         pst_id,
                         pst["title"],
                         pst["url"],
-                        pst["message"]
+                        pst["message"],
+                        parseFloat(pst["location"]["lat"]),
+                        parseFloat(pst["location"]["lon"])
                         )
                     );
                 }
@@ -73,7 +76,9 @@ export const fetchFacePosts = () => {
                         pst_id,
                         pst["title"],
                         pst["url"],
-                        pst["message"]
+                        pst["message"],
+                        0,
+                        0
                         )
                     );
                 }
@@ -113,7 +118,9 @@ export const fetchFoodPosts = () => {
                         pst_id,
                         pst["title"],
                         pst["url"],
-                        pst["message"]
+                        pst["message"],
+                        0,
+                        0
                         )
                     );
                 }
@@ -153,7 +160,9 @@ export const fetchExercisePosts = () => {
                         pst_id,
                         pst["title"],
                         pst["url"],
-                        pst["message"]
+                        pst["message"],
+                        0,
+                        0
                         )
                     );
                 }
@@ -165,3 +174,40 @@ export const fetchExercisePosts = () => {
         }
     };
 };
+
+export const createPost = (title, decription, imageUri, location) => {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token;
+        const imageName = imageUri.split('/').pop();
+        location.lat = 34.023399;
+        location.lng =  -118.280105;
+        const formData = new FormData();
+        formData.append('lat', location.lat);
+        formData.append('lon', location.lng);
+        formData.append('title', title);
+        formData.append('message', decription);
+        formData.append('image', {uri: imageUri, type: 'application/octet-stream', name: imageName});
+        const response = await fetch(`${API_ROOT}/post`, 
+        {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: token,
+            }
+        })
+
+        if (!response.ok) {
+            throw new Error('Error in fetchExercisePosts');
+        }
+
+        dispatch({ type: CREATE_POST, 
+            newPost: {
+                id: `new_post_${title}`,
+                title: title,
+                image: imageUri,
+                content: decription
+            } 
+        });
+    };
+  };
